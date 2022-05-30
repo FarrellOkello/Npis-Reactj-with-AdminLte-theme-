@@ -1,14 +1,113 @@
-import React from "react";
+import { useQuery } from "@apollo/client";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import Menu from "./Menu";
+import { toastr } from "react-redux-toastr";
+import { COMPANY_MASTERS_GRID } from "../_Common/Constants/Queries/CompanyMasters";
+import { makeStyles } from "@material-ui/core/styles";
+// import { Avatar, Chip } from "@material-ui/core";
+// import EditIcon from "@material-ui/icons/Edit";
+// import DeleteIcon from "@material-ui/icons/Delete";
+// import { Helmet } from "react-helmet";
+// import AgGridTable from "../Table/AggridTable";
+// import TableCardHeader from "../Table/TableCardHeader";
+// import TableSpinner from "../helper/TableSpinner";
+// import { Card, CardBody, CardHeader } from "../helper/controls";
+import { AgGridReact } from "ag-grid-react";
+// import TableTemplate from "../Table/TableTemplate";
 
-export default function Dashboard() {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap",
+  },
+  chip: {
+    margin: theme.spacing(1),
+  },
+}));
+
+function CompanyMasters() {
+  const classes = useStyles();
+  const [rowData, setRowData] = useState([]);
+  const [RowDataLoading, setRowDataLoading] = useState(false);
+  // const [show, setShow] = useState(false);
+  // const [action, setAction] = useState("");
+  // const [showDelete, setShowDelete] = useState(false);
+
+  const handleGetCompanyMasters = useQuery(COMPANY_MASTERS_GRID);
+
+  // Each Column Definition results in one Column.
+  const [columnDefs, setColumnDefs] = useState([
+    { field: "ID", filter: true, resizable: false, hide: true },
+    { field: "Company Code", filter: true, field: "CompanyCode" },
+    { field: "Company Name", filter: true, field: "CompanyName" },
+    {
+      field: "Company Registration Number",
+      filter: true,
+      field: "CompanyRegistrationNumber",
+    },
+    { field: "Email", filter: true, field: "Email" },
+    { field: "Contact Person Name", filter: true, field: "ContactPersonName" },
+    { field: "Contact Number", filter: true, field: "ContactNumber" },
+    { field: "Fax", filter: true, field: "Fax" },
+    { field: "Nationality", filter: true, field: "Nationality" },
+    { field: "Corporate status", filter: true },
+    { field: "Company Type", filter: true, field: "CompanyType" },
+  ]);
+
+  // DefaultColDef sets props common to all Columns
+  const defaultColDef = useMemo(() => ({
+    sortable: true,
+  }));
+
+  useEffect(() => {
+    const { loading, error, data } = handleGetCompanyMasters;
+
+    if (error) toastr.error("Failed", error.message);
+
+    if (!loading && data) {
+      setRowDataLoading(true);
+      const companyMasters = data.companyMasters.map((d) => {
+        return {
+          ...d,
+        };
+      });
+      setRowData(companyMasters);
+      setRowDataLoading(false);
+    }
+  }, [handleGetCompanyMasters]);
+
+  const handleAddNew = () => {
+    // setAction("Add");
+    // setShow(true);
+  };
+
+  const handleEdit = (data) => {
+    // setAction("Update");
+    // setShow(true);
+    // setProject_ID(data.Project_ID);
+  };
+
+  // const onHide = () => {
+  //   // setShow(false);
+  //   // clearData();
+  // };
+
+  const onShowDelete = (data) => {
+    // setShowDelete(true);
+    // setProject_ID(data.Project_ID);
+    // setProject_Name(data.Project_Name);
+  };
+
+  // const onHideDelete = () => {
+  //   // setShowDelete(false);
+  //   // clearData();
+  // };
+
   return (
-    <div>
-      <Menu />
-      <div className="content-wrapper">
+    <>
+      {/* <div className="content-wrapper">
         <div className="content-header">
-          <Menu />
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-6">
@@ -16,8 +115,8 @@ export default function Dashboard() {
               </div>
               <div className="col-sm-6">
                 <ol className="breadcrumb float-sm-right">
-                  <li className="breadcrumb-item">
-                    <Link to="/">Home</Link>
+                  <li class="breadcrumb-item">
+                    <a href="#">Home</a>
                   </li>
                   <li className="breadcrumb-item active">Dashboard v1</li>
                 </ol>
@@ -39,7 +138,7 @@ export default function Dashboard() {
                     <i className="ion ion-bag"></i>
                   </div>
                   <a href="#" className="small-box-footer">
-                    More info <i className="fas fa-arrow-circle-right"></i>
+                    More info <i class="fas fa-arrow-circle-right"></i>
                   </a>
                 </div>
               </div>
@@ -47,14 +146,16 @@ export default function Dashboard() {
               <div className="col-lg-3 col-6">
                 <div className="small-box bg-success">
                   <div className="inner">
-                    <h3>{/* 53<sup style={{font-size: "20px"}}>%</sup> */}</h3>
+                    <h3>
+                      53<sup style="font-size: 20px">%</sup>
+                    </h3>
                     <p>Bounce Rate</p>
                   </div>
                   <div className="icon">
                     <i className="ion ion-stats-bars"></i>
                   </div>
                   <a href="#" className="small-box-footer">
-                    More info <i className="fas fa-arrow-circle-right"></i>
+                    More info <i class="fas fa-arrow-circle-right"></i>
                   </a>
                 </div>
               </div>
@@ -69,7 +170,7 @@ export default function Dashboard() {
                     <i className="ion ion-person-add"></i>
                   </div>
                   <a href="#" className="small-box-footer">
-                    More info <i className="fas fa-arrow-circle-right"></i>
+                    More info <i class="fas fa-arrow-circle-right"></i>
                   </a>
                 </div>
               </div>
@@ -84,7 +185,7 @@ export default function Dashboard() {
                     <i className="ion ion-pie-graph"></i>
                   </div>
                   <a href="#" className="small-box-footer">
-                    More info <i className="fas fa-arrow-circle-right"></i>
+                    More info <i class="fas fa-arrow-circle-right"></i>
                   </a>
                 </div>
               </div>
@@ -92,7 +193,7 @@ export default function Dashboard() {
 
             <div className="row">
               <section className="col-lg-7 connectedSortable">
-                {/* <div className="card">
+                <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">
                       <i className="fas fa-chart-pie mr-1"></i>
@@ -102,7 +203,7 @@ export default function Dashboard() {
                       <ul className="nav nav-pills ml-auto">
                         <li className="nav-item">
                           <a
-                            className="nav-link active"
+                            class="nav-link active"
                             href="#revenue-chart"
                             data-toggle="tab"
                           >
@@ -111,7 +212,7 @@ export default function Dashboard() {
                         </li>
                         <li className="nav-item">
                           <a
-                            className="nav-link"
+                            class="nav-link"
                             href="#sales-chart"
                             data-toggle="tab"
                           >
@@ -124,32 +225,32 @@ export default function Dashboard() {
                   <div className="card-body">
                     <div className="tab-content p-0">
                       <div
-                        className="chart tab-pane active"
+                        class="chart tab-pane active"
                         id="revenue-chart"
-                        style={{ position: "relative", height: "300px" }}
+                        style="position: relative; height: 300px;"
                       >
                         <canvas
                           id="revenue-chart-canvas"
                           height="300"
-                          style={{ height: "300px" }}
+                          style="height: 300px;"
                         ></canvas>
                       </div>
                       <div
-                        className="chart tab-pane"
+                        class="chart tab-pane"
                         id="sales-chart"
-                        style={{ position: "relative", height: "300px" }}
+                        style="position: relative; height: 300px;"
                       >
                         <canvas
                           id="sales-chart-canvas"
                           height="300"
-                          style={{ height: "300px" }}
+                          style="height: 300px;"
                         ></canvas>
                       </div>
                     </div>
                   </div>
-                </div> */}
+                </div>
 
-                {/* <div className="card direct-chat direct-chat-primary">
+                <div className="card direct-chat direct-chat-primary">
                   <div className="card-header">
                     <h3 className="card-title">Direct Chat</h3>
                     <div className="card-tools">
@@ -168,7 +269,7 @@ export default function Dashboard() {
                       </button>
                       <button
                         type="button"
-                        className="btn btn-tool"
+                        class="btn btn-tool"
                         title="Contacts"
                         data-widget="chat-pane-toggle"
                       >
@@ -197,7 +298,7 @@ export default function Dashboard() {
                         </div>
 
                         <img
-                          className="direct-chat-img"
+                          class="direct-chat-img"
                           src="dist/img/user1-128x128.jpg"
                           alt="message user image"
                         />
@@ -219,7 +320,7 @@ export default function Dashboard() {
                         </div>
 
                         <img
-                          className="direct-chat-img"
+                          class="direct-chat-img"
                           src="dist/img/user3-128x128.jpg"
                           alt="message user image"
                         />
@@ -240,7 +341,7 @@ export default function Dashboard() {
                         </div>
 
                         <img
-                          className="direct-chat-img"
+                          class="direct-chat-img"
                           src="dist/img/user1-128x128.jpg"
                           alt="message user image"
                         />
@@ -261,7 +362,7 @@ export default function Dashboard() {
                         </div>
 
                         <img
-                          className="direct-chat-img"
+                          class="direct-chat-img"
                           src="dist/img/user3-128x128.jpg"
                           alt="message user image"
                         />
@@ -275,7 +376,7 @@ export default function Dashboard() {
                         <li>
                           <a href="#">
                             <img
-                              className="contacts-list-img"
+                              class="contacts-list-img"
                               src="dist/img/user1-128x128.jpg"
                               alt="User Avatar"
                             />
@@ -296,7 +397,7 @@ export default function Dashboard() {
                         <li>
                           <a href="#">
                             <img
-                              className="contacts-list-img"
+                              class="contacts-list-img"
                               src="dist/img/user7-128x128.jpg"
                               alt="User Avatar"
                             />
@@ -317,7 +418,7 @@ export default function Dashboard() {
                         <li>
                           <a href="#">
                             <img
-                              className="contacts-list-img"
+                              class="contacts-list-img"
                               src="dist/img/user3-128x128.jpg"
                               alt="User Avatar"
                             />
@@ -338,7 +439,7 @@ export default function Dashboard() {
                         <li>
                           <a href="#">
                             <img
-                              className="contacts-list-img"
+                              class="contacts-list-img"
                               src="dist/img/user5-128x128.jpg"
                               alt="User Avatar"
                             />
@@ -359,7 +460,7 @@ export default function Dashboard() {
                         <li>
                           <a href="#">
                             <img
-                              className="contacts-list-img"
+                              class="contacts-list-img"
                               src="dist/img/user6-128x128.jpg"
                               alt="User Avatar"
                             />
@@ -380,7 +481,7 @@ export default function Dashboard() {
                         <li>
                           <a href="#">
                             <img
-                              className="contacts-list-img"
+                              class="contacts-list-img"
                               src="dist/img/user8-128x128.jpg"
                               alt="User Avatar"
                             />
@@ -407,7 +508,7 @@ export default function Dashboard() {
                         <input
                           type="text"
                           name="message"
-                          placeHolder="Type Message ..."
+                          placeholder="Type Message ..."
                           className="form-control"
                         />
                         <span className="input-group-append">
@@ -418,9 +519,9 @@ export default function Dashboard() {
                       </div>
                     </form>
                   </div>
-                </div> */}
+                </div>
 
-                {/* <div className="card">
+                <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">
                       <i className="ion ion-clipboard mr-1"></i>
@@ -429,27 +530,27 @@ export default function Dashboard() {
                     <div className="card-tools">
                       <ul className="pagination pagination-sm">
                         <li className="page-item">
-                          <a href="#" className="page-link">
+                          <a href="#" class="page-link">
                             &laquo;
                           </a>
                         </li>
                         <li className="page-item">
-                          <a href="#" className="page-link">
+                          <a href="#" class="page-link">
                             1
                           </a>
                         </li>
                         <li className="page-item">
-                          <a href="#" className="page-link">
+                          <a href="#" class="page-link">
                             2
                           </a>
                         </li>
                         <li className="page-item">
-                          <a href="#" className="page-link">
+                          <a href="#" class="page-link">
                             3
                           </a>
                         </li>
                         <li className="page-item">
-                          <a href="#" className="page-link">
+                          <a href="#" class="page-link">
                             &raquo;
                           </a>
                         </li>
@@ -478,7 +579,7 @@ export default function Dashboard() {
                         <span className="text">Design a nice theme</span>
 
                         <small className="badge badge-danger">
-                          <i className="far fa-clock"></i> 2 mins
+                          <i class="far fa-clock"></i> 2 mins
                         </small>
 
                         <div className="tools">
@@ -503,7 +604,7 @@ export default function Dashboard() {
                         </div>
                         <span className="text">Make the theme responsive</span>
                         <small className="badge badge-info">
-                          <i className="far fa-clock"></i> 4 hours
+                          <i class="far fa-clock"></i> 4 hours
                         </small>
                         <div className="tools">
                           <i className="fas fa-edit"></i>
@@ -528,7 +629,7 @@ export default function Dashboard() {
                           Let theme shine like a star
                         </span>
                         <small className="badge badge-warning">
-                          <i className="far fa-clock"></i> 1 day
+                          <i class="far fa-clock"></i> 1 day
                         </small>
                         <div className="tools">
                           <i className="fas fa-edit"></i>
@@ -553,7 +654,7 @@ export default function Dashboard() {
                           Let theme shine like a star
                         </span>
                         <small className="badge badge-success">
-                          <i className="far fa-clock"></i> 3 days
+                          <i class="far fa-clock"></i> 3 days
                         </small>
                         <div className="tools">
                           <i className="fas fa-edit"></i>
@@ -578,7 +679,7 @@ export default function Dashboard() {
                           Check your messages and notifications
                         </span>
                         <small className="badge badge-primary">
-                          <i className="far fa-clock"></i> 1 week
+                          <i class="far fa-clock"></i> 1 week
                         </small>
                         <div className="tools">
                           <i className="fas fa-edit"></i>
@@ -603,7 +704,7 @@ export default function Dashboard() {
                           Let theme shine like a star
                         </span>
                         <small className="badge badge-secondary">
-                          <i className="far fa-clock"></i> 1 month
+                          <i class="far fa-clock"></i> 1 month
                         </small>
                         <div className="tools">
                           <i className="fas fa-edit"></i>
@@ -618,14 +719,14 @@ export default function Dashboard() {
                       type="button"
                       className="btn btn-primary float-right"
                     >
-                      <i className="fas fa-plus"></i> Add item
+                      <i class="fas fa-plus"></i> Add item
                     </button>
                   </div>
-                </div> */}
+                </div>
               </section>
 
               <section className="col-lg-5 connectedSortable">
-                {/* <div className="card bg-gradient-primary">
+                <div className="card bg-gradient-primary">
                   <div className="card-header border-0">
                     <h3 className="card-title">
                       <i className="fas fa-map-marker-alt mr-1"></i>
@@ -635,14 +736,14 @@ export default function Dashboard() {
                     <div className="card-tools">
                       <button
                         type="button"
-                        className="btn btn-primary btn-sm daterange"
+                        class="btn btn-primary btn-sm daterange"
                         title="Date range"
                       >
                         <i className="far fa-calendar-alt"></i>
                       </button>
                       <button
                         type="button"
-                        className="btn btn-primary btn-sm"
+                        class="btn btn-primary btn-sm"
                         data-card-widget="collapse"
                         title="Collapse"
                       >
@@ -653,7 +754,7 @@ export default function Dashboard() {
                   <div className="card-body">
                     <div
                       id="world-map"
-                      style={{ height: "250px", width: "100%" }}
+                      style="height: 250px; width: 100%;"
                     ></div>
                   </div>
 
@@ -675,9 +776,9 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-                </div> */}
+                </div>
 
-                {/* <div className="card bg-gradient-info">
+                <div className="card bg-gradient-info">
                   <div className="card-header border-0">
                     <h3 className="card-title">
                       <i className="fas fa-th mr-1"></i>
@@ -702,14 +803,9 @@ export default function Dashboard() {
                   </div>
                   <div className="card-body">
                     <canvas
-                      className="chart"
+                      class="chart"
                       id="line-chart"
-                      style={{
-                        minHeight: "250px",
-                        height: "250px",
-                        maxHeight: "250px",
-                        maxHeight: "100%",
-                      }}
+                      style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"
                     ></canvas>
                   </div>
 
@@ -718,7 +814,7 @@ export default function Dashboard() {
                       <div className="col-4 text-center">
                         <input
                           type="text"
-                          className="knob"
+                          class="knob"
                           data-readonly="true"
                           value="20"
                           data-width="60"
@@ -731,7 +827,7 @@ export default function Dashboard() {
                       <div className="col-4 text-center">
                         <input
                           type="text"
-                          className="knob"
+                          class="knob"
                           data-readonly="true"
                           value="50"
                           data-width="60"
@@ -744,7 +840,7 @@ export default function Dashboard() {
                       <div className="col-4 text-center">
                         <input
                           type="text"
-                          className="knob"
+                          class="knob"
                           data-readonly="true"
                           value="30"
                           data-width="60"
@@ -755,9 +851,9 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-                </div> */}
+                </div>
 
-                {/* <div className="card bg-gradient-success">
+                <div className="card bg-gradient-success">
                   <div className="card-header border-0">
                     <h3 className="card-title">
                       <i className="far fa-calendar-alt"></i>
@@ -805,14 +901,67 @@ export default function Dashboard() {
                   </div>
 
                   <div className="card-body pt-0">
-                    <div id="calendar" style={{ width: "100%" }}></div>
+                    <div id="calendar" style="width: 100%"></div>
                   </div>
-                </div> */}
+                </div>
               </section>
             </div>
           </div>
         </section>
+      </div> */}
+
+      <div>
+        <div className="content-wrapper">
+          <div className="content-header">
+            <div className="container-fluid">
+              <div className="row mb-2">
+                <div className="col-sm-6">
+                  <h1 className="m-0">Company Masters</h1>
+                </div>
+                <div className="col-sm-6">
+                  <ol className="breadcrumb float-sm-right">
+                    <li className="breadcrumb-item">
+                      <Link to="/dashboard">Dashboard</Link>
+                    </li>
+                    <li className="breadcrumb-item active">Company Masters</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <section className="col-lg-12 connectedSortable">
+              <div className="card">
+                <div
+                  className="ag-theme-alpine"
+                  style={{ /* width: 500, */ height: 500 }}
+                >
+                  <AgGridReact
+                    rowData={rowData} // Row Data for Rows
+                    columnDefs={columnDefs} // Column Defs for Columns
+                    defaultColDef={defaultColDef} // Default Column Properties
+                    animateRows={true} // Optional - set to 'true' to have rows animate when sorted
+                    rowSelection="multiple" // Options - allows click selection of rows}
+                    // onCellClicked={cellClickedListener} // Optional - registering for Grid Event
+                  />
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
       </div>
-    </div>
+      {/* </CardBody> */}
+      {/* <CgProjectsModal
+          action={action}
+          handleSubmit={handleSubmit}
+          show={show}
+          onHide={onHide}
+          showDelete={showDelete}
+          onHideDelete={onHideDelete}
+          handleDelete={handleDelete}
+        /> */}
+      {/* </Card> */}
+    </>
   );
 }
+export default CompanyMasters;

@@ -6,8 +6,8 @@ export default function Menu() {
       <aside className="main-sidebar sidebar-dark-primary elevation-4">
         <a href="index3.html" className="brand-link">
           <img
-            src="dist/img/AdminLTELogo.png"
-            alt="AdminLTE Logo"
+            src="#"
+            alt="#"
             class="brand-image img-circle elevation-3"
             style={{ opacity: " .8" }}
           />
@@ -61,7 +61,7 @@ export default function Menu() {
                   </p>
                 </a>
                 <ul className="nav nav-treeview">
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <a href="./index.html" className="nav-link active">
                       <i className="far fa-circle nav-icon"></i>
                       <p>Dashboard v1</p>
@@ -78,10 +78,10 @@ export default function Menu() {
                       <i className="far fa-circle nav-icon"></i>
                       <p>Dashboard v3</p>
                     </a>
-                  </li>
+                  </li> */}
                 </ul>
               </li>
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <a href="pages/widgets.html" className="nav-link">
                   <i className="nav-icon fas fa-th"></i>
                   <p>
@@ -169,8 +169,8 @@ export default function Menu() {
                     </a>
                   </li>
                 </ul>
-              </li>
-              <li className="nav-item">
+              </li> */}
+              {/* <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="nav-icon fas fa-chart-pie"></i>
                   <p>
@@ -626,7 +626,7 @@ export default function Menu() {
                     </a>
                   </li>
                 </ul>
-              </li>
+              </li> */}
               <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="nav-icon fas fa-search"></i>
@@ -650,7 +650,7 @@ export default function Menu() {
                   </li>
                 </ul>
               </li>
-              <li className="nav-header">MISCELLANEOUS</li>
+              {/* <li className="nav-header">MISCELLANEOUS</li>
               <li className="nav-item">
                 <a href="iframe.html" className="nav-link">
                   <i className="nav-icon fas fa-ellipsis-h"></i>
@@ -662,8 +662,8 @@ export default function Menu() {
                   <i className="nav-icon fas fa-file"></i>
                   <p>Documentation</p>
                 </a>
-              </li>
-              <li className="nav-header">MULTI LEVEL EXAMPLE</li>
+              </li> */}
+              {/* <li className="nav-header">MULTI LEVEL EXAMPLE</li>
               <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="fas fa-circle nav-icon"></i>
@@ -719,8 +719,8 @@ export default function Menu() {
                     </a>
                   </li>
                 </ul>
-              </li>
-              <li className="nav-item">
+              </li> */}
+              {/* <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="fas fa-circle nav-icon"></i>
                   <p>Level 1</p>
@@ -744,7 +744,7 @@ export default function Menu() {
                   <i className="nav-icon far fa-circle text-info"></i>
                   <p>Informational</p>
                 </a>
-              </li>
+              </li> */}
             </ul>
           </nav>
         </div>
