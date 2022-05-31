@@ -1,42 +1,60 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { toastr } from "react-redux-toastr";
 import { COMPANY_MASTERS_GRID } from "../_Common/Constants/Queries/CompanyMasters";
-import { makeStyles } from "@material-ui/core/styles";
-// import { Avatar, Chip } from "@material-ui/core";
-// import EditIcon from "@material-ui/icons/Edit";
-// import DeleteIcon from "@material-ui/icons/Delete";
-// import { Helmet } from "react-helmet";
-// import AgGridTable from "../Table/AggridTable";
-// import TableCardHeader from "../Table/TableCardHeader";
-// import TableSpinner from "../helper/TableSpinner";
-// import { Card, CardBody, CardHeader } from "../helper/controls";
 import { AgGridReact } from "ag-grid-react";
-// import TableTemplate from "../Table/TableTemplate";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-  },
-  chip: {
-    margin: theme.spacing(1),
-  },
-}));
+import CompanyMasterModal from "./CompanyMasterModal";
+import { Button } from "reactstrap";
+import { CREATE_COMPANY_MASTER } from "../_Common/Constants/Mutations/CompanyMasters";
+import TableSpinner from "../Table/TableSpinner";
 
 function CompanyMasters() {
-  const classes = useStyles();
+  const [ID, setID] = useState(0);
+  const [CompanyCode, setCompanyCode] = useState("");
+  const [CompanyName, setCompanyName] = useState("");
+  const [CompanyRegistrationNumber, setCompanyRegistrationNumber] =
+    useState("");
+  const [Email, setEmail] = useState("");
+  const [ContactPersonName, setContactPersonName] = useState("");
+  const [ContactNumber, setContactNumber] = useState("");
+  const [Nationality, setNationality] = useState("");
+  const [CompanyType, setCompanyType] = useState("");
+  const [Corporatestatus, setCorporatestatus] = useState("");
+  const [IsActive, setIsActive] = useState(0);
+  const [AlternateEmail, setAlternateEmail] = useState("");
+  const [AlternateContactNumber, setAlternateContactNumber] = useState("");
+  const [Fax, setFax] = useState("");
+  const [TaxIdentificationNumber, setTaxIdentificationNumber] = useState("");
+  const [IsSubmitted, setIsSubmitted] = useState(0);
+  const [RegisterAddress, setRegisterAddress] = useState("");
+  const [AlternateAddress, setAlternateAddress] = useState("");
+  const [District, setDistrict] = useState("");
+  const [CompanyRegion, setCompanyRegion] = useState("");
+  const [County, setCounty] = useState("");
+  const [Subcounty, setSubcounty] = useState("");
+  const [Parish, setParish] = useState("");
+  const [Zone_LC1, setZone_LC1] = useState("");
+  const [PostalCode, setPostalCode] = useState("");
+  // const [CreatedBy] = useState(0);
+  // const [ModifiedBy] = useState(0);
+  const [CompanyRole, setCompanyRole] = useState("");
+  const [CompanyLogoExtension, setCompanyLogoExtension] = useState("");
+  const [PermitType, setPermitType] = useState("");
+  const [PermitNumber, setPermitNumber] = useState("");
+  const [PermitStatus, setPermitStatus] = useState("");
+  const [Company_Site, setCompany_Site] = useState("");
+  const [PermitDetails, setPermitDetails] = useState("");
+
   const [rowData, setRowData] = useState([]);
   const [RowDataLoading, setRowDataLoading] = useState(false);
-  // const [show, setShow] = useState(false);
-  // const [action, setAction] = useState("");
-  // const [showDelete, setShowDelete] = useState(false);
+  const [show, setShow] = useState(false);
+  const [action, setAction] = useState("");
+  const [showDelete, setShowDelete] = useState(false);
 
   const handleGetCompanyMasters = useQuery(COMPANY_MASTERS_GRID);
+  const [addCompanyMaster] = useMutation(CREATE_COMPANY_MASTER);
 
-  // Each Column Definition results in one Column.
   const [columnDefs, setColumnDefs] = useState([
     { field: "ID", filter: true, resizable: false, hide: true },
     { field: "Company Code", filter: true, field: "CompanyCode" },
@@ -55,7 +73,6 @@ function CompanyMasters() {
     { field: "Company Type", filter: true, field: "CompanyType" },
   ]);
 
-  // DefaultColDef sets props common to all Columns
   const defaultColDef = useMemo(() => ({
     sortable: true,
   }));
@@ -78,838 +95,157 @@ function CompanyMasters() {
   }, [handleGetCompanyMasters]);
 
   const handleAddNew = () => {
-    // setAction("Add");
-    // setShow(true);
+    setAction("Add");
+    setShow(true);
   };
 
   const handleEdit = (data) => {
-    // setAction("Update");
-    // setShow(true);
-    // setProject_ID(data.Project_ID);
+    setAction("Update");
+    setShow(true);
+    setID(data.ID);
   };
 
-  // const onHide = () => {
-  //   // setShow(false);
-  //   // clearData();
-  // };
+  const clearData = () => {
+    setAction("");
+  };
+
+  const onHide = () => {
+    setShow(false);
+    clearData();
+  };
 
   const onShowDelete = (data) => {
-    // setShowDelete(true);
-    // setProject_ID(data.Project_ID);
-    // setProject_Name(data.Project_Name);
+    setShowDelete(true);
   };
 
-  // const onHideDelete = () => {
-  //   // setShowDelete(false);
-  //   // clearData();
-  // };
+  const onHideDelete = () => {
+    setShowDelete(false);
+    clearData();
+  };
+
+  const handleSubmit = () => {
+    if (action === "Add") {
+      addCompanyMaster({
+        variables: {
+          CompanyCode: CompanyCode,
+          CompanyName: CompanyName,
+          CompanyRegistrationNumber: CompanyRegistrationNumber,
+          Email: Email,
+          ContactPersonName: ContactPersonName,
+          ContactNumber: ContactNumber,
+          Nationality: Nationality,
+          Corporatestatus: Corporatestatus,
+          CompanyType: CompanyType,
+          IsActive: 1 /* IsActive */,
+          AlternateEmail: AlternateEmail,
+          AlternateContactNumber: AlternateContactNumber,
+          Fax: Fax,
+          TaxIdentificationNumber: TaxIdentificationNumber,
+          IsSubmitted: 1,
+          RegisterAddress: RegisterAddress,
+          AlternateAddress: AlternateAddress,
+          District: District,
+          CompanyRegion: CompanyRegion,
+          County: County,
+          Subcounty: Subcounty,
+          Parish: Parish,
+          Zone_LC1: Zone_LC1,
+          PostalCode: PostalCode,
+          CreatedBy: 1,
+          ModifiedBy: 1,
+          CompanyRole: CompanyRole,
+          CompanyLogoExtension: CompanyLogoExtension,
+          PermitType: PermitType,
+          PermitNumber: PermitNumber,
+          PermitStatus: PermitStatus,
+          Company_Site: Company_Site,
+          PermitDetails: PermitDetails,
+        },
+      })
+        .then(({ data: { createCompanyMaster } }) => {
+          if (createCompanyMaster) {
+            handleGetCompanyMasters.refetch();
+            clearData();
+            setShow(false);
+            toastr.success("Success", "Company Master Added");
+          } else {
+            toastr.error("Failed", "Company Master Not Added");
+          }
+        })
+        .catch((error) => {
+          console.log(JSON.stringify(error, null, 2));
+          toastr.error(
+            "Failed",
+            JSON.parse(JSON.stringify(error, null, 2)).message
+          );
+        });
+      // } else if (action === "Update") {
+      //   updateCgProject({
+      //     variables: {
+      //       Project_ID: Project_ID,
+      //       Vote_By_Sub_SubProgID: Vote_By_Sub_SubProgID,
+      //       Project_Code: Project_Code,
+      //       Project_Name: Project_Name,
+      //       Mandatory_Objectives: "",
+      //       Responsible_Officer: "",
+      //       Category: Category,
+      //       Status: Status,
+      //       Project_Status: Project_Status,
+      //       Start_Date: Start_Date,
+      //       End_Date: End_Date,
+      //       Electronic_Signature_FileName: "",
+      //       Modified_By: Modified_By,
+      //     },
+      //   })
+      //     .then(({ data: { updateCgProject } }) => {
+      //       if (updateCgProject) {
+      //         handleGetProjects.refetch();
+      //         clearData();
+      //         setShow(false);
+      //         toastr.success("Success", "Project Updated");
+      //       } else {
+      //         toastr.error("Failed", "Project Not Updated");
+      //       }
+      //     })
+      //     .catch((error) => {
+      //       toastr.error(
+      //         "Failed",
+      //         JSON.parse(JSON.stringify(error, null, 2)).message
+      //       );
+      //     });
+    }
+  };
+
+  const handleDelete = () => {
+    // if (Project_ID) {
+    //   removeCgProject({
+    //     variables: {
+    //       Project_ID: Project_ID,
+    //     },
+    //   })
+    //     .then(({ data: { removeCgProject } }) => {
+    //       if (removeCgProject) {
+    //         handleGetProjects.refetch();
+    //         clearData();
+    //         setShowDelete(false);
+    //         toastr.success("Success", "Project Deleted");
+    //       } else {
+    //         toastr.error("Failed", "Project Not Deleted");
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       toastr.error(
+    //         "Failed",
+    //         `Project Not Deleted${extractErrorMessage(error)}`
+    //       );
+    //     });
+    // } else {
+    //   toastr.error("Error", "Select Project to delete");
+    // }
+  };
 
   return (
     <>
-      {/* <div className="content-wrapper">
-        <div className="content-header">
-          <div className="container-fluid">
-            <div className="row mb-2">
-              <div className="col-sm-6">
-                <h1 className="m-0">Dashboard</h1>
-              </div>
-              <div className="col-sm-6">
-                <ol className="breadcrumb float-sm-right">
-                  <li class="breadcrumb-item">
-                    <a href="#">Home</a>
-                  </li>
-                  <li className="breadcrumb-item active">Dashboard v1</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <section className="content">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-lg-3 col-6">
-                <div className="small-box bg-info">
-                  <div className="inner">
-                    <h3>150</h3>
-                    <p>New Orders</p>
-                  </div>
-                  <div className="icon">
-                    <i className="ion ion-bag"></i>
-                  </div>
-                  <a href="#" className="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
-                  </a>
-                </div>
-              </div>
-
-              <div className="col-lg-3 col-6">
-                <div className="small-box bg-success">
-                  <div className="inner">
-                    <h3>
-                      53<sup style="font-size: 20px">%</sup>
-                    </h3>
-                    <p>Bounce Rate</p>
-                  </div>
-                  <div className="icon">
-                    <i className="ion ion-stats-bars"></i>
-                  </div>
-                  <a href="#" className="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
-                  </a>
-                </div>
-              </div>
-
-              <div className="col-lg-3 col-6">
-                <div className="small-box bg-warning">
-                  <div className="inner">
-                    <h3>44</h3>
-                    <p>User Registrations</p>
-                  </div>
-                  <div className="icon">
-                    <i className="ion ion-person-add"></i>
-                  </div>
-                  <a href="#" className="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
-                  </a>
-                </div>
-              </div>
-
-              <div className="col-lg-3 col-6">
-                <div className="small-box bg-danger">
-                  <div className="inner">
-                    <h3>65</h3>
-                    <p>Unique Visitors</p>
-                  </div>
-                  <div className="icon">
-                    <i className="ion ion-pie-graph"></i>
-                  </div>
-                  <a href="#" className="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="row">
-              <section className="col-lg-7 connectedSortable">
-                <div className="card">
-                  <div className="card-header">
-                    <h3 className="card-title">
-                      <i className="fas fa-chart-pie mr-1"></i>
-                      Sales
-                    </h3>
-                    <div className="card-tools">
-                      <ul className="nav nav-pills ml-auto">
-                        <li className="nav-item">
-                          <a
-                            class="nav-link active"
-                            href="#revenue-chart"
-                            data-toggle="tab"
-                          >
-                            Area
-                          </a>
-                        </li>
-                        <li className="nav-item">
-                          <a
-                            class="nav-link"
-                            href="#sales-chart"
-                            data-toggle="tab"
-                          >
-                            Donut
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div className="tab-content p-0">
-                      <div
-                        class="chart tab-pane active"
-                        id="revenue-chart"
-                        style="position: relative; height: 300px;"
-                      >
-                        <canvas
-                          id="revenue-chart-canvas"
-                          height="300"
-                          style="height: 300px;"
-                        ></canvas>
-                      </div>
-                      <div
-                        class="chart tab-pane"
-                        id="sales-chart"
-                        style="position: relative; height: 300px;"
-                      >
-                        <canvas
-                          id="sales-chart-canvas"
-                          height="300"
-                          style="height: 300px;"
-                        ></canvas>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="card direct-chat direct-chat-primary">
-                  <div className="card-header">
-                    <h3 className="card-title">Direct Chat</h3>
-                    <div className="card-tools">
-                      <span
-                        title="3 New Messages"
-                        className="badge badge-primary"
-                      >
-                        3
-                      </span>
-                      <button
-                        type="button"
-                        className="btn btn-tool"
-                        data-card-widget="collapse"
-                      >
-                        <i className="fas fa-minus"></i>
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-tool"
-                        title="Contacts"
-                        data-widget="chat-pane-toggle"
-                      >
-                        <i className="fas fa-comments"></i>
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-tool"
-                        data-card-widget="remove"
-                      >
-                        <i className="fas fa-times"></i>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="card-body">
-                    <div className="direct-chat-messages">
-                      <div className="direct-chat-msg">
-                        <div className="direct-chat-infos clearfix">
-                          <span className="direct-chat-name float-left">
-                            Alexander Pierce
-                          </span>
-                          <span className="direct-chat-timestamp float-right">
-                            23 Jan 2:00 pm
-                          </span>
-                        </div>
-
-                        <img
-                          class="direct-chat-img"
-                          src="dist/img/user1-128x128.jpg"
-                          alt="message user image"
-                        />
-
-                        <div className="direct-chat-text">
-                          Is this template really htmlFor free? That's
-                          unbelievable!
-                        </div>
-                      </div>
-
-                      <div className="direct-chat-msg right">
-                        <div className="direct-chat-infos clearfix">
-                          <span className="direct-chat-name float-right">
-                            Sarah Bullock
-                          </span>
-                          <span className="direct-chat-timestamp float-left">
-                            23 Jan 2:05 pm
-                          </span>
-                        </div>
-
-                        <img
-                          class="direct-chat-img"
-                          src="dist/img/user3-128x128.jpg"
-                          alt="message user image"
-                        />
-
-                        <div className="direct-chat-text">
-                          You better believe it!
-                        </div>
-                      </div>
-
-                      <div className="direct-chat-msg">
-                        <div className="direct-chat-infos clearfix">
-                          <span className="direct-chat-name float-left">
-                            Alexander Pierce
-                          </span>
-                          <span className="direct-chat-timestamp float-right">
-                            23 Jan 5:37 pm
-                          </span>
-                        </div>
-
-                        <img
-                          class="direct-chat-img"
-                          src="dist/img/user1-128x128.jpg"
-                          alt="message user image"
-                        />
-
-                        <div className="direct-chat-text">
-                          Working with AdminLTE on a great new app! Wanna join?
-                        </div>
-                      </div>
-
-                      <div className="direct-chat-msg right">
-                        <div className="direct-chat-infos clearfix">
-                          <span className="direct-chat-name float-right">
-                            Sarah Bullock
-                          </span>
-                          <span className="direct-chat-timestamp float-left">
-                            23 Jan 6:10 pm
-                          </span>
-                        </div>
-
-                        <img
-                          class="direct-chat-img"
-                          src="dist/img/user3-128x128.jpg"
-                          alt="message user image"
-                        />
-
-                        <div className="direct-chat-text">I would love to.</div>
-                      </div>
-                    </div>
-
-                    <div className="direct-chat-contacts">
-                      <ul className="contacts-list">
-                        <li>
-                          <a href="#">
-                            <img
-                              class="contacts-list-img"
-                              src="dist/img/user1-128x128.jpg"
-                              alt="User Avatar"
-                            />
-                            <div className="contacts-list-info">
-                              <span className="contacts-list-name">
-                                Count Dracula
-                                <small className="contacts-list-date float-right">
-                                  2/28/2015
-                                </small>
-                              </span>
-                              <span className="contacts-list-msg">
-                                How have you been? I was...
-                              </span>
-                            </div>
-                          </a>
-                        </li>
-
-                        <li>
-                          <a href="#">
-                            <img
-                              class="contacts-list-img"
-                              src="dist/img/user7-128x128.jpg"
-                              alt="User Avatar"
-                            />
-                            <div className="contacts-list-info">
-                              <span className="contacts-list-name">
-                                Sarah Doe
-                                <small className="contacts-list-date float-right">
-                                  2/23/2015
-                                </small>
-                              </span>
-                              <span className="contacts-list-msg">
-                                I will be waiting for...
-                              </span>
-                            </div>
-                          </a>
-                        </li>
-
-                        <li>
-                          <a href="#">
-                            <img
-                              class="contacts-list-img"
-                              src="dist/img/user3-128x128.jpg"
-                              alt="User Avatar"
-                            />
-                            <div className="contacts-list-info">
-                              <span className="contacts-list-name">
-                                Nadia Jolie
-                                <small className="contacts-list-date float-right">
-                                  2/20/2015
-                                </small>
-                              </span>
-                              <span className="contacts-list-msg">
-                                I'll call you back at...
-                              </span>
-                            </div>
-                          </a>
-                        </li>
-
-                        <li>
-                          <a href="#">
-                            <img
-                              class="contacts-list-img"
-                              src="dist/img/user5-128x128.jpg"
-                              alt="User Avatar"
-                            />
-                            <div className="contacts-list-info">
-                              <span className="contacts-list-name">
-                                Nora S. Vans
-                                <small className="contacts-list-date float-right">
-                                  2/10/2015
-                                </small>
-                              </span>
-                              <span className="contacts-list-msg">
-                                Where is your new...
-                              </span>
-                            </div>
-                          </a>
-                        </li>
-
-                        <li>
-                          <a href="#">
-                            <img
-                              class="contacts-list-img"
-                              src="dist/img/user6-128x128.jpg"
-                              alt="User Avatar"
-                            />
-                            <div className="contacts-list-info">
-                              <span className="contacts-list-name">
-                                John K.
-                                <small className="contacts-list-date float-right">
-                                  1/27/2015
-                                </small>
-                              </span>
-                              <span className="contacts-list-msg">
-                                Can I take a look at...
-                              </span>
-                            </div>
-                          </a>
-                        </li>
-
-                        <li>
-                          <a href="#">
-                            <img
-                              class="contacts-list-img"
-                              src="dist/img/user8-128x128.jpg"
-                              alt="User Avatar"
-                            />
-                            <div className="contacts-list-info">
-                              <span className="contacts-list-name">
-                                Kenneth M.
-                                <small className="contacts-list-date float-right">
-                                  1/4/2015
-                                </small>
-                              </span>
-                              <span className="contacts-list-msg">
-                                Never mind I found...
-                              </span>
-                            </div>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="card-footer">
-                    <form action="#" method="post">
-                      <div className="input-group">
-                        <input
-                          type="text"
-                          name="message"
-                          placeholder="Type Message ..."
-                          className="form-control"
-                        />
-                        <span className="input-group-append">
-                          <button type="button" className="btn btn-primary">
-                            Send
-                          </button>
-                        </span>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-
-                <div className="card">
-                  <div className="card-header">
-                    <h3 className="card-title">
-                      <i className="ion ion-clipboard mr-1"></i>
-                      To Do List
-                    </h3>
-                    <div className="card-tools">
-                      <ul className="pagination pagination-sm">
-                        <li className="page-item">
-                          <a href="#" class="page-link">
-                            &laquo;
-                          </a>
-                        </li>
-                        <li className="page-item">
-                          <a href="#" class="page-link">
-                            1
-                          </a>
-                        </li>
-                        <li className="page-item">
-                          <a href="#" class="page-link">
-                            2
-                          </a>
-                        </li>
-                        <li className="page-item">
-                          <a href="#" class="page-link">
-                            3
-                          </a>
-                        </li>
-                        <li className="page-item">
-                          <a href="#" class="page-link">
-                            &raquo;
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="card-body">
-                    <ul className="todo-list" data-widget="todo-list">
-                      <li>
-                        <span className="handle">
-                          <i className="fas fa-ellipsis-v"></i>
-                          <i className="fas fa-ellipsis-v"></i>
-                        </span>
-
-                        <div className="icheck-primary d-inline ml-2">
-                          <input
-                            type="checkbox"
-                            value=""
-                            name="todo1"
-                            id="todoCheck1"
-                          />
-                          <label htmlFor="todoCheck1"></label>
-                        </div>
-
-                        <span className="text">Design a nice theme</span>
-
-                        <small className="badge badge-danger">
-                          <i class="far fa-clock"></i> 2 mins
-                        </small>
-
-                        <div className="tools">
-                          <i className="fas fa-edit"></i>
-                          <i className="fas fa-trash-o"></i>
-                        </div>
-                      </li>
-                      <li>
-                        <span className="handle">
-                          <i className="fas fa-ellipsis-v"></i>
-                          <i className="fas fa-ellipsis-v"></i>
-                        </span>
-                        <div className="icheck-primary d-inline ml-2">
-                          <input
-                            type="checkbox"
-                            value=""
-                            name="todo2"
-                            id="todoCheck2"
-                            checked
-                          />
-                          <label htmlFor="todoCheck2"></label>
-                        </div>
-                        <span className="text">Make the theme responsive</span>
-                        <small className="badge badge-info">
-                          <i class="far fa-clock"></i> 4 hours
-                        </small>
-                        <div className="tools">
-                          <i className="fas fa-edit"></i>
-                          <i className="fas fa-trash-o"></i>
-                        </div>
-                      </li>
-                      <li>
-                        <span className="handle">
-                          <i className="fas fa-ellipsis-v"></i>
-                          <i className="fas fa-ellipsis-v"></i>
-                        </span>
-                        <div className="icheck-primary d-inline ml-2">
-                          <input
-                            type="checkbox"
-                            value=""
-                            name="todo3"
-                            id="todoCheck3"
-                          />
-                          <label htmlFor="todoCheck3"></label>
-                        </div>
-                        <span className="text">
-                          Let theme shine like a star
-                        </span>
-                        <small className="badge badge-warning">
-                          <i class="far fa-clock"></i> 1 day
-                        </small>
-                        <div className="tools">
-                          <i className="fas fa-edit"></i>
-                          <i className="fas fa-trash-o"></i>
-                        </div>
-                      </li>
-                      <li>
-                        <span className="handle">
-                          <i className="fas fa-ellipsis-v"></i>
-                          <i className="fas fa-ellipsis-v"></i>
-                        </span>
-                        <div className="icheck-primary d-inline ml-2">
-                          <input
-                            type="checkbox"
-                            value=""
-                            name="todo4"
-                            id="todoCheck4"
-                          />
-                          <label htmlFor="todoCheck4"></label>
-                        </div>
-                        <span className="text">
-                          Let theme shine like a star
-                        </span>
-                        <small className="badge badge-success">
-                          <i class="far fa-clock"></i> 3 days
-                        </small>
-                        <div className="tools">
-                          <i className="fas fa-edit"></i>
-                          <i className="fas fa-trash-o"></i>
-                        </div>
-                      </li>
-                      <li>
-                        <span className="handle">
-                          <i className="fas fa-ellipsis-v"></i>
-                          <i className="fas fa-ellipsis-v"></i>
-                        </span>
-                        <div className="icheck-primary d-inline ml-2">
-                          <input
-                            type="checkbox"
-                            value=""
-                            name="todo5"
-                            id="todoCheck5"
-                          />
-                          <label htmlFor="todoCheck5"></label>
-                        </div>
-                        <span className="text">
-                          Check your messages and notifications
-                        </span>
-                        <small className="badge badge-primary">
-                          <i class="far fa-clock"></i> 1 week
-                        </small>
-                        <div className="tools">
-                          <i className="fas fa-edit"></i>
-                          <i className="fas fa-trash-o"></i>
-                        </div>
-                      </li>
-                      <li>
-                        <span className="handle">
-                          <i className="fas fa-ellipsis-v"></i>
-                          <i className="fas fa-ellipsis-v"></i>
-                        </span>
-                        <div className="icheck-primary d-inline ml-2">
-                          <input
-                            type="checkbox"
-                            value=""
-                            name="todo6"
-                            id="todoCheck6"
-                          />
-                          <label htmlFor="todoCheck6"></label>
-                        </div>
-                        <span className="text">
-                          Let theme shine like a star
-                        </span>
-                        <small className="badge badge-secondary">
-                          <i class="far fa-clock"></i> 1 month
-                        </small>
-                        <div className="tools">
-                          <i className="fas fa-edit"></i>
-                          <i className="fas fa-trash-o"></i>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="card-footer clearfix">
-                    <button
-                      type="button"
-                      className="btn btn-primary float-right"
-                    >
-                      <i class="fas fa-plus"></i> Add item
-                    </button>
-                  </div>
-                </div>
-              </section>
-
-              <section className="col-lg-5 connectedSortable">
-                <div className="card bg-gradient-primary">
-                  <div className="card-header border-0">
-                    <h3 className="card-title">
-                      <i className="fas fa-map-marker-alt mr-1"></i>
-                      Visitors
-                    </h3>
-
-                    <div className="card-tools">
-                      <button
-                        type="button"
-                        class="btn btn-primary btn-sm daterange"
-                        title="Date range"
-                      >
-                        <i className="far fa-calendar-alt"></i>
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-primary btn-sm"
-                        data-card-widget="collapse"
-                        title="Collapse"
-                      >
-                        <i className="fas fa-minus"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div
-                      id="world-map"
-                      style="height: 250px; width: 100%;"
-                    ></div>
-                  </div>
-
-                  <div className="card-footer bg-transparent">
-                    <div className="row">
-                      <div className="col-4 text-center">
-                        <div id="sparkline-1"></div>
-                        <div className="text-white">Visitors</div>
-                      </div>
-
-                      <div className="col-4 text-center">
-                        <div id="sparkline-2"></div>
-                        <div className="text-white">Online</div>
-                      </div>
-
-                      <div className="col-4 text-center">
-                        <div id="sparkline-3"></div>
-                        <div className="text-white">Sales</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="card bg-gradient-info">
-                  <div className="card-header border-0">
-                    <h3 className="card-title">
-                      <i className="fas fa-th mr-1"></i>
-                      Sales Graph
-                    </h3>
-                    <div className="card-tools">
-                      <button
-                        type="button"
-                        className="btn bg-info btn-sm"
-                        data-card-widget="collapse"
-                      >
-                        <i className="fas fa-minus"></i>
-                      </button>
-                      <button
-                        type="button"
-                        className="btn bg-info btn-sm"
-                        data-card-widget="remove"
-                      >
-                        <i className="fas fa-times"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <canvas
-                      class="chart"
-                      id="line-chart"
-                      style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"
-                    ></canvas>
-                  </div>
-
-                  <div className="card-footer bg-transparent">
-                    <div className="row">
-                      <div className="col-4 text-center">
-                        <input
-                          type="text"
-                          class="knob"
-                          data-readonly="true"
-                          value="20"
-                          data-width="60"
-                          data-height="60"
-                          data-fgColor="#39CCCC"
-                        />
-                        <div className="text-white">Mail-Orders</div>
-                      </div>
-
-                      <div className="col-4 text-center">
-                        <input
-                          type="text"
-                          class="knob"
-                          data-readonly="true"
-                          value="50"
-                          data-width="60"
-                          data-height="60"
-                          data-fgColor="#39CCCC"
-                        />
-                        <div className="text-white">Online</div>
-                      </div>
-
-                      <div className="col-4 text-center">
-                        <input
-                          type="text"
-                          class="knob"
-                          data-readonly="true"
-                          value="30"
-                          data-width="60"
-                          data-height="60"
-                          data-fgColor="#39CCCC"
-                        />
-                        <div className="text-white">In-Store</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="card bg-gradient-success">
-                  <div className="card-header border-0">
-                    <h3 className="card-title">
-                      <i className="far fa-calendar-alt"></i>
-                      Calendar
-                    </h3>
-
-                    <div className="card-tools">
-                      <div className="btn-group">
-                        <button
-                          type="button"
-                          className="btn btn-success btn-sm dropdown-toggle"
-                          data-toggle="dropdown"
-                          data-offset="-52"
-                        >
-                          <i className="fas fa-bars"></i>
-                        </button>
-                        <div className="dropdown-menu" role="menu">
-                          <a href="#" className="dropdown-item">
-                            Add new event
-                          </a>
-                          <a href="#" className="dropdown-item">
-                            Clear events
-                          </a>
-                          <div className="dropdown-divider"></div>
-                          <a href="#" className="dropdown-item">
-                            View calendar
-                          </a>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        className="btn btn-success btn-sm"
-                        data-card-widget="collapse"
-                      >
-                        <i className="fas fa-minus"></i>
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-success btn-sm"
-                        data-card-widget="remove"
-                      >
-                        <i className="fas fa-times"></i>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="card-body pt-0">
-                    <div id="calendar" style="width: 100%"></div>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </div>
-        </section>
-      </div> */}
-
       <div>
         <div className="content-wrapper">
           <div className="content-header">
@@ -932,35 +268,132 @@ function CompanyMasters() {
           <div className="row">
             <section className="col-lg-12 connectedSortable">
               <div className="card">
-                <div
+                <div className="card-header">
+                  <h3 className="card-title">Company Masters</h3>
+                  <div className="card-tools">
+                    <ul className="nav nav-pills ml-auto">
+                      <li className="nav-item">
+                        <Button color="primary" onClick={handleAddNew}>
+                          Add CompanyMaster
+                        </Button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="ag-theme-alpine" style={{ height: 400 }}>
+                  {RowDataLoading ? (
+                    <TableSpinner />
+                  ) : (
+                    <AgGridReact
+                      rowData={rowData}
+                      columnDefs={columnDefs}
+                      defaultColDef={defaultColDef}
+                      animateRows={true}
+                      rowSelection="multiple"
+                    />
+                  )}
+                </div>
+
+                {/* <div
                   className="ag-theme-alpine"
-                  style={{ /* width: 500, */ height: 500 }}
+                  style={{ width: 500, height: 500 }}
                 >
                   <AgGridReact
-                    rowData={rowData} // Row Data for Rows
-                    columnDefs={columnDefs} // Column Defs for Columns
-                    defaultColDef={defaultColDef} // Default Column Properties
-                    animateRows={true} // Optional - set to 'true' to have rows animate when sorted
-                    rowSelection="multiple" // Options - allows click selection of rows}
-                    // onCellClicked={cellClickedListener} // Optional - registering for Grid Event
+                    rowData={rowData}
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    animateRows={true}
+                    rowSelection="multiple"
                   />
-                </div>
+                </div> */}
               </div>
             </section>
           </div>
         </div>
       </div>
-      {/* </CardBody> */}
-      {/* <CgProjectsModal
-          action={action}
-          handleSubmit={handleSubmit}
-          show={show}
-          onHide={onHide}
-          showDelete={showDelete}
-          onHideDelete={onHideDelete}
-          handleDelete={handleDelete}
-        /> */}
-      {/* </Card> */}
+      <CompanyMasterModal
+        action={action}
+        handleSubmit={handleSubmit}
+        show={show}
+        onHide={onHide}
+        showDelete={onShowDelete}
+        onHideDelete={onHideDelete}
+        // handleDelete={handleDelete}
+        ID={ID}
+        CompanyCode={CompanyCode}
+        changeCompanyCode={(e) => setCompanyCode(e.target.value)}
+        CompanyName={CompanyName}
+        changeCompanyName={(e) => setCompanyName(e.target.value)}
+        CompanyRegistrationNumber={CompanyRegistrationNumber}
+        changeCompanyRegistrationNumber={(e) =>
+          setCompanyRegistrationNumber(e.target.value)
+        }
+        Email={Email}
+        changeEmail={(e) => setEmail(e.target.value)}
+        ContactPersonName={ContactPersonName}
+        changeContactPersonName={(e) => setContactPersonName(e.target.value)}
+        ContactNumber={ContactNumber}
+        changeContactNumber={(e) => setContactNumber(e.target.value)}
+        Nationality={Nationality}
+        changeNationality={(e) => setNationality(e.target.value)}
+        CompanyType={CompanyType}
+        changeCompanyType={(e) => setCompanyType(e.target.value)}
+        Corporatestatus={Corporatestatus}
+        changeCorporatestatus={(e) => setCorporatestatus(e.target.value)}
+        IsActive={IsActive}
+        changeIsActive={(e) => setIsActive(e.target.value)}
+        AlternateEmail={AlternateEmail}
+        changeAlternateEmail={(e) => setAlternateEmail(e.target.value)}
+        AlternateContactNumber={AlternateContactNumber}
+        changeAlternateContactNumber={(e) =>
+          setAlternateContactNumber(e.target.value)
+        }
+        Fax={Fax}
+        changeFax={(e) => setFax(e.target.value)}
+        TaxIdentificationNumber={TaxIdentificationNumber}
+        changeTaxIdentificationNumber={(e) =>
+          setTaxIdentificationNumber(e.target.value)
+        }
+        IsSubmitted={IsSubmitted}
+        changeIsSubmitted={(e) => setIsSubmitted(e.target.value)}
+        RegisterAddress={RegisterAddress}
+        changeRegisterAddress={(e) => setRegisterAddress(e.target.value)}
+        AlternateAddress={AlternateAddress}
+        changeAlternateAddress={(e) => setAlternateAddress(e.target.value)}
+        District={District}
+        changeDistrict={(e) => setDistrict(e.target.value)}
+        CompanyRegion={CompanyRegion}
+        changeCompanyRegion={(e) => setCompanyRegion(e.target.value)}
+        County={County}
+        changeCounty={(e) => setCounty(e.target.value)}
+        Subcounty={Subcounty}
+        changeSubcounty={(e) => setSubcounty(e.target.value)}
+        Parish={Parish}
+        changeParish={(e) => setParish(e.target.value)}
+        Zone_LC1={Zone_LC1}
+        changeZone_LC1={(e) => setZone_LC1(e.target.value)}
+        PostalCode={PostalCode}
+        changePostalCode={(e) => setPostalCode(e.target.value)}
+        // CreatedBy] = useState(0);
+        // ModifiedBy] = useState(0);
+        CompanyRole={CompanyRole}
+        changeCompanyRole={(e) => setCompanyRole(e.target.value)}
+        CompanyLogoExtension={CompanyLogoExtension}
+        changeCompanyLogoExtension={(e) =>
+          setCompanyLogoExtension(e.target.value)
+        }
+        PermitType={PermitType}
+        changePermitType={(e) => setPermitType(e.target.value)}
+        PermitNumber={PermitNumber}
+        changePermitNumber={(e) => setPermitNumber(e.target.value)}
+        PermitStatus={PermitStatus}
+        changePermitStatus={(e) => setPermitStatus(e.target.value)}
+        Company_Site={Company_Site}
+        changeCompany_Site={(e) => setCompany_Site(e.target.value)}
+        PermitDetails={PermitDetails}
+        changePermitDetails={(e) => setPermitDetails(e.target.value)}
+      />
     </>
   );
 }
